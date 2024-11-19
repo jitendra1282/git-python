@@ -1,0 +1,68 @@
+import random
+
+# List of predefined words related to computer science
+words = ["algorithm", "function", "variable", "compile", "iterate", "recursion", 
+         "binary", "array", "syntax", "pointer"]
+
+def display_hangman(incorrect_guesses):
+    """Display the current hangman status."""
+    hangman_header = "HANGMAN"
+    pointer = "^" * len(incorrect_guesses)
+    
+    print(hangman_header)
+    print(" " * (len(hangman_header) - 1) + pointer)
+
+def display_word(word, guessed_letters):
+    """Display the current state of the word."""
+    return " ".join([letter if letter in guessed_letters else "_" for letter in word])
+
+def play_game():
+    """Main function to run the Hangman game."""
+    word_to_guess = random.choice(words)
+    guessed_letters = set()  # Letters guessed correctly
+    incorrect_guesses = 0  # Number of incorrect guesses
+    max_incorrect_guesses = 6  # Max number of incorrect guesses before losing
+
+    while incorrect_guesses < max_incorrect_guesses:
+        # Show current progress
+        print("\n" + display_word(word_to_guess, guessed_letters))
+        
+        # Show hangman status
+        display_hangman(" " * incorrect_guesses)
+
+        # Prompt for a guess
+        guess = input("\nGuess a letter: ").lower()
+
+        # Validate the input
+        if len(guess) != 1 or not guess.isalpha():
+            print("Invalid input. Please enter a single letter.")
+            continue
+        
+        if guess in guessed_letters or guess in word_to_guess:
+            print(f"You already guessed '{guess}' or it's part of the word.")
+        elif guess in word_to_guess:
+            guessed_letters.add(guess)
+            print(f"Good guess! '{guess}' is in the word.")
+        else:
+            incorrect_guesses += 1
+            print(f"Wrong guess! '{guess}' is not in the word.")
+        
+        # Check if the player has guessed the word
+        if all(letter in guessed_letters for letter in word_to_guess):
+            print("\nCongratulations! You've guessed the word: " + word_to_guess)
+            print("Phew… you are saved!")
+            break
+        
+    # If the player runs out of incorrect guesses
+    if incorrect_guesses == max_incorrect_guesses:
+        print("\nSorry, you've been hanged! The word was: " + word_to_guess)
+    
+    # Ask if the player wants to play again
+    replay = input("\nDo you want to play again? (y/n): ").lower()
+    if replay == "y":
+        play_game()  # Restart the game
+    else:
+        print("Thanks for playing!")
+
+if __name__ == "__main__":
+    play_game()
